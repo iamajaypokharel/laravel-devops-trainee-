@@ -38,7 +38,9 @@ http://127.0.0.1:8000/api/articles
 
 
 from ajayman
+....
 Laravel DevOps Beginner Guide (Up to artisan serve)
+...
 This guide explains how to clone a Laravel project, install PHP, Composer, SQLite, configure the application, and run it using the built-in Laravel development server. It also shows how to access it via an EC2 public IP.
 
 1. Prerequisites
@@ -48,34 +50,46 @@ This guide explains how to clone a Laravel project, install PHP, Composer, SQLit
 •	Security Group allows TCP 8000 (EC2)
 2. Clone Repository
 git clone https://github.com/iamajaypokharel/laravel-devops-trainee-.git
+....
 cd laravel-devops-trainee-
+...
 3. Install PHP and Extensions
+   
 sudo apt update
 sudo apt install -y php php-cli php-fpm php-sqlite3 php-xml php-mbstring php-curl php-zip php-bcmath php-gd unzip git sqlite3
+
 4. Install Composer
+   
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 composer --version
+
 5. Install Dependencies
+   
 composer install
 Purpose: Downloads all PHP packages listed in composer.json into the vendor directory.
 6. Configure Environment
+
 cp .env.example .env
 php artisan key:generate
 Edit .env:
 DB_CONNECTION=sqlite
 touch database/database.sqlite
 7. Run Migrations
+
 php artisan migrate
 8. Start Laravel
+
 php artisan serve --host=0.0.0.0 --port=8000
 Using --host=0.0.0.0 allows connections from other machines instead of only localhost.
 9. Access from Browser
+
 Local: http://127.0.0.1:8000
 EC2: http://<EC2-PUBLIC-IP>:8000
 Example API endpoint if your application defines routes in routes/api.php:
 http://<EC2-PUBLIC-IP>:8000/api/users  or if you want you can /api/articles for backend 
 Replace /api/users with your actual API route.
+
 10. Troubleshooting
 •	vendor/autoload.php missing: Run composer install
 •	Application key missing: php artisan key:generate
