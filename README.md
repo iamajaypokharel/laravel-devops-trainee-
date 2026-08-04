@@ -1,100 +1,153 @@
-### Laravel implementation of RealWorld app
+# Laravel RealWorld (Conduit) — DevOps Trainee Guide
 
-This Laravel app is part of the [RealWorld](https://github.com/gothinkster/realworld) project and implementation of the [Laravel best practices](https://github.com/alexeymezenin/laravel-best-practices).
+A Laravel implementation of the RealWorld example app (Conduit) with a beginner-friendly DevOps guide (up to running with `php artisan serve`).
 
-You might also check [Ruby on Rails version](https://github.com/alexeymezenin/ruby-on-rails-realworld-example-app) of this app.
+Original project references:
+- RealWorld project: https://github.com/gothinkster/realworld
+- Laravel example (inspiration): https://github.com/alexeymezenin/laravel-realworld-example-app
+- Ruby on Rails example: https://github.com/alexeymezenin/ruby-on-rails-realworld-example-app
 
-See how the exact same Medium.com clone (called [Conduit](https://demo.realworld.io)) is built using different [frontends](https://codebase.show/projects/realworld?category=frontend) and [backends](https://codebase.show/projects/realworld?category=backend). Yes, you can mix and match them, because **they all adhere to the same [API spec](https://gothinkster.github.io/realworld/docs/specs/backend-specs/introduction)**
+---
 
-### How to run the API
+## Table of contents
+- [Prerequisites](#prerequisites)
+- [Clone repository](#clone-repository)
+- [Install PHP & extensions](#install-php--extensions)
+- [Install Composer](#install-composer)
+- [Install project dependencies](#install-project-dependencies)
+- [Configure environment](#configure-environment)
+- [Database (SQLite)](#database-sqlite)
+- [Run migrations](#run-migrations)
+- [Start the application](#start-the-application)
+- [Access the API](#access-the-api)
+- [Troubleshooting](#troubleshooting)
+- [Notes & credits](#notes--credits)
 
-Make sure you have PHP and Composer installed globally on your computer.
+---
 
-Clone the repo and enter the project folder
+## Prerequisites
+- Ubuntu (local VM or EC2) or other Linux distro
+- Git
+- Internet connection
+- If using EC2: Security Group permits inbound TCP on port 8000 (or whichever port you use)
 
-```
-git clone https://github.com/alexeymezenin/laravel-realworld-example-app.git
-cd laravel-realworld-example-app
-```
+---
 
-Install the app
+## Clone repository
+Replace with your repo URL if different:
 
-```
-composer install
-cp .env.example .env
-```
-
-Run the web server
-
-```
-php artisan serve
-```
-
-That's it. Now you can use the api, i.e.
-
-```
-http://127.0.0.1:8000/api/articles
-```
-
-
-from ajayman
-....
-Laravel DevOps Beginner Guide (Up to artisan serve)
-...
-This guide explains how to clone a Laravel project, install PHP, Composer, SQLite, configure the application, and run it using the built-in Laravel development server. It also shows how to access it via an EC2 public IP.
-
-1. Prerequisites
-•	Ubuntu server (local VM or EC2)
-•	Git installed
-•	Internet connection
-•	Security Group allows TCP 8000 (EC2)
-2. Clone Repository
+```bash
 git clone https://github.com/iamajaypokharel/laravel-devops-trainee-.git
-....
 cd laravel-devops-trainee-
-...
-3. Install PHP and Extensions
-   
+```
+
+---
+
+## Install PHP & extensions (Ubuntu example)
+Update package list and install PHP + common extensions used by Laravel:
+
+```bash
 sudo apt update
 sudo apt install -y php php-cli php-fpm php-sqlite3 php-xml php-mbstring php-curl php-zip php-bcmath php-gd unzip git sqlite3
+```
 
-4. Install Composer
-   
+(Adjust package names for your distribution or PHP version.)
+
+---
+
+## Install Composer
+Download and make Composer globally available:
+
+```bash
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
 composer --version
+```
 
-5. Install Dependencies
-   
+---
+
+## Install project dependencies
+Runs Composer to download vendor packages:
+
+```bash
 composer install
-Purpose: Downloads all PHP packages listed in composer.json into the vendor directory.
-6. Configure Environment
+```
 
+---
+
+## Configure environment
+Copy example env and generate application key:
+
+```bash
 cp .env.example .env
 php artisan key:generate
-Edit .env:
+```
+
+Edit `.env` for your settings. To use SQLite set:
+
+```
 DB_CONNECTION=sqlite
+```
+
+Create the SQLite file:
+
+```bash
+mkdir -p database
 touch database/database.sqlite
-7. Run Migrations
+```
 
+Ensure `.env` has correct DB path (Laravel uses database/database.sqlite by default when DB_CONNECTION=sqlite).
+
+---
+
+## Run migrations
+
+```bash
 php artisan migrate
-8. Start Laravel
+```
 
+If migrations fail, check `.env` and that `database/database.sqlite` exists and is writeable.
+
+---
+
+## Start the application (dev)
+Use Laravel's built-in server and allow external access (useful for EC2 or VM):
+
+```bash
 php artisan serve --host=0.0.0.0 --port=8000
-Using --host=0.0.0.0 allows connections from other machines instead of only localhost.
-9. Access from Browser
+```
 
-Local: http://127.0.0.1:8000
-EC2: http://<EC2-PUBLIC-IP>:8000
-Example API endpoint if your application defines routes in routes/api.php:
-http://<EC2-PUBLIC-IP>:8000/api/users  or if you want you can /api/articles for backend 
-Replace /api/users with your actual API route.
+---
 
-10. Troubleshooting
-•	vendor/autoload.php missing: Run composer install
-•	Application key missing: php artisan key:generate
-•	SQLite error: touch database/database.sqlite and set DB_CONNECTION=sqlite
-•	Port 8000 not reachable: Open inbound TCP 8000 in EC2 Security Group and use --host=0.0.0.0
+## Access the API
+- Local: http://127.0.0.1:8000
+- Remote (EC2/VM): http://<EC2-PUBLIC-IP>:8000
 
+Example API endpoints (depends on routes defined in routes/api.php):
 
+- http://<HOST>:8000/api/articles
+- http://<HOST>:8000/api/users
 
+Replace `<HOST>` with your local IP or EC2 public IP.
+
+---
+
+## Troubleshooting
+- vendor/autoload.php missing: run `composer install`.
+- Application key missing: run `php artisan key:generate`.
+- SQLite errors: ensure `database/database.sqlite` exists and `DB_CONNECTION=sqlite` in `.env`.
+- Port 8000 not reachable on EC2: open inbound TCP 8000 in Security Group or use SSH port forwarding.
+- Permission issues writing to SQLite: check file and directory ownership & permissions.
+
+---
+
+## Notes & next steps
+- This guide covers development setup up to `php artisan serve`. For production, consider using a webserver (nginx/Apache) and configuring queue workers, caching, SSL, environment secrets, and database backups.
+- If you intend to expose the app publicly, use a proper webserver and reverse proxy rather than the built-in server.
+
+---
+
+## Credits
+- Original RealWorld project: gothinkster/realworld
+- Community Laravel example: alexeymezenin/laravel-realworld-example-app
+- Maintainer: ajayman (from repo)
