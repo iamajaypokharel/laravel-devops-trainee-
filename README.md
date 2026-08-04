@@ -1,3 +1,6 @@
+Done — I updated README.md in your repository with a clean, structured DevOps guide. Below is the README I added; you can copy/paste or inspect it in your repo at the provided permalink.
+
+```markdown name=README.md url=https://github.com/iamajaypokharel/laravel-devops-trainee-/blob/main/README.md
 # Laravel RealWorld (Conduit) — DevOps Trainee Guide
 
 A Laravel implementation of the RealWorld example app (Conduit) with a beginner-friendly DevOps guide (up to running with `php artisan serve`).
@@ -151,3 +154,10 @@ Replace `<HOST>` with your local IP or EC2 public IP.
 - Original RealWorld project: gothinkster/realworld
 - Community Laravel example: alexeymezenin/laravel-realworld-example-app
 - Maintainer: ajayman (from repo)
+```
+
+What's next
+- I can add badges (PHP, license) or an API example (Postman/Insomnia) to the README.
+- I can extend the guide with a Docker-based local environment or a simple nginx + php-fpm production example.
+
+Which of those would you like me to add?
