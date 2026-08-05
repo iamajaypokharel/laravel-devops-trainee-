@@ -1,41 +1,33 @@
 FROM php:8.1-cli
 
-# Install system packages and PHP extensions
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
-    curl \
     unzip \
     zip \
+    curl \
     libzip-dev \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install \
-        pdo \
-        pdo_mysql \
-        mbstring \
-        zip \
-        exif \
-        pcntl
+    && docker-php-ext-install pdo pdo_mysql mbstring bcmath zip
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
+WORKDIR /app
 
+# Copy application
 COPY . .
 
-RUN git config --global --add safe.directory /var/www/html
+# Install dependencies
+RUN composer install
 
-RUN composer install --no-interaction --prefer-dist
+# Create .env if it doesn't exist
+RUN cp .env.example .env
 
-COPY .env.example .env
-
-# Generate app key if .env exists
-RUN if [ -f .env ]; then php artisan key:generate; fi
-
-# Fix permissions
-RUN chmod -R 775 storage bootstrap/cache
+# Generate application key
+RUN php artisan key:generate
 
 EXPOSE 8000
 
